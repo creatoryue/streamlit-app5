@@ -35,8 +35,8 @@ def app_sendonly_audio():
         client_settings=WEBRTC_CLIENT_SETTINGS,
     )
 def main():
-    "# Classificaion for lung condition demo."
     
+    st.header("# Classificaion for lung condition demo.")
     "### Recording"
     app_sendonly_audio()
     
