@@ -36,9 +36,8 @@ def app_sendonly_audio():
 def main():
     
     
-    # Classification for lung condition
+    '''# Classification for lung condition'''
     ## Recording
-    
     app_sendonly_audio()
     
 
