@@ -1,3 +1,6 @@
+import logging
+from pathlib import Path
+
 from streamlit_webrtc import (
     AudioProcessorBase,
     ClientSettings,
@@ -6,13 +9,19 @@ from streamlit_webrtc import (
     webrtc_streamer,
 )
 
-import logging
-from pathlib import Path
+
 
 HERE = Path(__file__).parent
-
 logger = logging.getLogger(__name__)
 
+
+WEBRTC_CLIENT_SETTINGS = ClientSettings(
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    media_stream_constraints={
+        "video": False,
+        "audio": True,
+    },
+)
 
 def app_sendonly_audio():
     """A sample to use WebRTC in sendonly mode to transfer audio frames
