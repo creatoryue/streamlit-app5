@@ -33,8 +33,20 @@ def app_sendonly_audio():
         audio_receiver_size=256,
         client_settings=WEBRTC_CLIENT_SETTINGS,
     )
+def main():
+    
+    '''
+    # Classification for lung condition
+    ## Recording
+    '''
+    app_sendonly_audio()
+    
 
-
+    
+    
+    
+    
+    
 if __name__ == '__main__':
     import os
 
@@ -54,4 +66,4 @@ if __name__ == '__main__':
     fsevents_logger = logging.getLogger("fsevents")
     fsevents_logger.setLevel(logging.WARNING)
     
-    app_sendonly_audio()
+    main()
