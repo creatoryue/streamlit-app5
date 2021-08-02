@@ -36,7 +36,7 @@ def app_sendonly_audio():
 def main():
     
     
-    '''# Classification for lung condition'''
+    st.header("Classificaion for lung condition demo")
     ## Recording
     app_sendonly_audio()
     
