@@ -6,3 +6,9 @@ from streamlit_webrtc import (
     webrtc_streamer,
 )
 
+import logging
+from pathlib import Path
+
+HERE = Path(__file__).parent
+
+logger = logging.getLogger(__name__)
