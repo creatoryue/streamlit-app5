@@ -26,7 +26,7 @@ def app_sendonly_audio():
     )
 
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     import os
 
     DEBUG = os.environ.get("DEBUG", "false").lower() not in ["false", "no", "0"]
