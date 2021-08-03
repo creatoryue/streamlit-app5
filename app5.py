@@ -34,7 +34,7 @@ def app_sendonly_audio():
         client_settings=WEBRTC_CLIENT_SETTINGS,
     )
     
-    sound_window_len = 5000  # 5s
+    sound_window_len = 5*1000  # 5s
     sound_window_buffer = None
     while True:
         if webrtc_ctx.audio_receiver:
@@ -64,12 +64,16 @@ def app_sendonly_audio():
                 if len(sound_window_buffer) > sound_window_len:
                     sound_window_buffer = sound_window_buffer[-sound_window_len:]
     
+    sound_window_buffer = sound_window_buffer.set_channels(1)
+    sample = np.array(sound_window_buffer.get_array_of_samples())
     
+    return sample;
+
 def main():
     
     st.header("# Classificaion for lung condition demo.")
     "### Recording"
-    app_sendonly_audio()
+    sdata = app_sendonly_audio()
     
 
     
