@@ -80,7 +80,8 @@ def main():
     "### Recording"
     sdata = app_sendonly_audio()
     
-    st.text('after')
+    if st.button('click'):
+        st.text(sdata)
     
     
     
