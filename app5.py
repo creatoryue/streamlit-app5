@@ -23,7 +23,7 @@ WEBRTC_CLIENT_SETTINGS = ClientSettings(
     },
 )
 
-def reluslts = app_sendonly_audio():
+def app_sendonly_audio():
     """A sample to use WebRTC in sendonly mode to transfer audio frames
     from the browser to the server and visualize them with matplotlib
     and `st.pyplot`."""
