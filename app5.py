@@ -77,7 +77,7 @@ def main():
     "### Recording"
     sdata = app_sendonly_audio()
     
-    st.text(sdata)
+    st.text('after')
     
     
     
