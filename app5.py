@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 import streamlit as st
 import pydub
+import numpy as np
 
 from streamlit_webrtc import (
     AudioProcessorBase,
