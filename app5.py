@@ -69,13 +69,13 @@ def app_sendonly_audio():
                 sample = np.array(sound_window_buffer.get_array_of_samples())
 
     
-    #return sample;
+    return sample;
 
 def main():
     
     st.header("# Classificaion for lung condition demo.")
     "### Recording"
-    app_sendonly_audio()
+    sdata = app_sendonly_audio()
     
 
     
