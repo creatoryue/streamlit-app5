@@ -4,6 +4,8 @@ import streamlit as st
 import pydub
 import numpy as np
 import queue
+import matplotlib.pyplot as plt
+
 
 from streamlit_webrtc import (
     AudioProcessorBase,
@@ -66,12 +68,12 @@ def app_sendonly_audio():
                 sound_window_buffer += sound_chunk
                 if len(sound_window_buffer) > sound_window_len:
                     sound_window_buffer = sound_window_buffer[-sound_window_len:]
-'''
+
             if sound_window_buffer:
                 sound_window_buffer = sound_window_buffer.set_channels(1)
                 sample = np.array(sound_window_buffer.get_array_of_samples())
                 return sample
-    '''
+
     
 
 def main():
@@ -84,7 +86,10 @@ def main():
     if state_playButton:
         # st.text(sdata)
         st.text('Hello!')
-    
+        try:
+            st.pyplot(sdata)
+        else:
+            logger.warning("Error in plotting sdata.")
     
     
     
