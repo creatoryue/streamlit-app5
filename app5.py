@@ -51,25 +51,25 @@ def app_sendonly_audio():
     if webrtc_ctx.audio_receiver:
         audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
 
-    sound_chunk = pydub.AudioSegment.empty()
-    for audio_frame in audio_frames:
-        sound = pydub.AudioSegment(
-            data=audio_frame.to_ndarray().tobytes(),
-            sample_width=audio_frame.format.bytes,
-            frame_rate=audio_frame.sample_rate,
-            channels=len(audio_frame.layout.channels),
-        )
-        sound_chunk += sound
-
-    if len(sound_chunk) > 0:
-        if sound_window_buffer is None:
-            sound_window_buffer = pydub.AudioSegment.silent(
-                duration=sound_window_len
+        sound_chunk = pydub.AudioSegment.empty()
+        for audio_frame in audio_frames:
+            sound = pydub.AudioSegment(
+                data=audio_frame.to_ndarray().tobytes(),
+                sample_width=audio_frame.format.bytes,
+                frame_rate=audio_frame.sample_rate,
+                channels=len(audio_frame.layout.channels),
             )
+            sound_chunk += sound
 
-        sound_window_buffer += sound_chunk
-        if len(sound_window_buffer) > sound_window_len:
-            sound_window_buffer = sound_window_buffer[-sound_window_len:]
+        if len(sound_chunk) > 0:
+            if sound_window_buffer is None:
+                sound_window_buffer = pydub.AudioSegment.silent(
+                    duration=sound_window_len
+                )
+
+            sound_window_buffer += sound_chunk
+            if len(sound_window_buffer) > sound_window_len:
+                sound_window_buffer = sound_window_buffer[-sound_window_len:]
 
     if sound_window_buffer:
         # Ref: https://own-search-and-study.xyz/2017/10/27/python%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E9%9F%B3%E5%A3%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%81%8B%E3%82%89%E3%82%B9%E3%83%9A%E3%82%AF%E3%83%88%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92%E4%BD%9C/  # noqa
