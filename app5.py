@@ -45,7 +45,7 @@ def app_sendonly_audio():
         2, 1, gridspec_kw={"top": 1.5, "bottom": 0.2}
     )
 
-    sound_window_len = 5000  # 5s
+    sound_window_len = 32000  # 5s
     sound_window_buffer = None
     while True:
         if webrtc_ctx.audio_receiver:
