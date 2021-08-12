@@ -101,17 +101,18 @@ def app_sendonly_audio():
                 ax_freq.set_ylabel("Magnitude")
 
                 fig_place.pyplot(fig)
+                
         else:
             logger.warning("AudioReciver is not set. Abort.")
             break
 
-    
+    return sample
 
 def main():
     
     st.header("# Classificaion for lung condition demo.")
     "### Recording"
-    app_sendonly_audio()
+    sdata = app_sendonly_audio()
     
     state_playButton = st.button("Click to show")
     if state_playButton:
