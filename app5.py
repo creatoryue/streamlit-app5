@@ -60,17 +60,34 @@ def main():
     
     st.header("# Classificaion for lung condition demo.")
     "### Recording"
-    sdata = app_sendonly_audio()
     
-    state_playButton = st.button("Click to show")
-    if state_playButton:
-        # st.text(sdata)
-        st.text('Hello!')
-        try:
-            st.pyplot(sdata)
-        except:
-            logger.warning("Error in plotting sdata.")
+    # sdata = app_sendonly_audio()
     
+    # state_playButton = st.button("Click to show")
+    # if state_playButton:
+        # # st.text(sdata)
+        # st.text('Hello!')
+        # try:
+        #     st.pyplot(sdata)
+        # except:
+        #    logger.warning("Error in plotting sdata.")
+    def recorder_factory():
+        return MediaRecorder("record.wav")
+
+    webrtc_streamer(
+        key="sendonly-audio",
+        mode=WebRtcMode.SENDONLY,
+        in_recorder_factory=recorder_factory,
+        client_settings=ClientSettings(
+            rtc_configuration={
+                "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
+            },
+            media_stream_constraints={
+                "audio": True,
+                "video": False,
+            },
+        ),
+    )
     
     
     
