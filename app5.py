@@ -101,7 +101,7 @@ def app_sendonly_audio():
                 ax_freq.set_ylabel("Magnitude")
 
                 fig_place.pyplot(fig)
-                return sample
+                
         else:
             logger.warning("AudioReciver is not set. Abort.")
             break
