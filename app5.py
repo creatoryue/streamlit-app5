@@ -88,7 +88,7 @@ def main():
         st.text('Hello!')
         try:
             st.pyplot(sdata)
-        else:
+        except :
             logger.warning("Error in plotting sdata.")
     
     
