@@ -7,6 +7,8 @@ import queue
 import matplotlib.pyplot as plt
 
 
+from aiortc.contrib.media import MediaRecorder
+
 from streamlit_webrtc import (
     AudioProcessorBase,
     ClientSettings,
