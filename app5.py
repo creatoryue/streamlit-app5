@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from aiortc.contrib.media import MediaRecorder
 
 from streamlit_webrtc import (
-    AudioProcessorBase,
+    # AudioProcessorBase,
     ClientSettings,
-    VideoProcessorBase,
+    # VideoProcessorBase,
     WebRtcMode,
     webrtc_streamer,
 )
@@ -22,39 +22,7 @@ HERE = Path(__file__).parent
 logger = logging.getLogger(__name__)
 
 
-WEBRTC_CLIENT_SETTINGS = ClientSettings(
-    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-    media_stream_constraints={
-        "video": False,
-        "audio": True,
-    },
-)
 
-def app_sendonly_audio():
-    """A sample to use WebRTC in sendonly mode to transfer audio frames
-    from the browser to the server and visualize them with matplotlib
-    and `st.pyplot`."""
-    webrtc_ctx = webrtc_streamer(
-        key="sendonly-audio",
-        mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=256,
-        client_settings=WEBRTC_CLIENT_SETTINGS,
-    )
-    
-    fig_place = st.empty()
-
-    fig, [ax_time, ax_freq] = plt.subplots(
-        2, 1, gridspec_kw={"top": 1.5, "bottom": 0.2}
-    )
-
-    sound_window_len = 32000  # 5s
-    sound_window_buffer = None
-    
-    
-                
-
-
-    
 
 def main():
     
