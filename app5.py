@@ -82,7 +82,8 @@ def main():
     
     state_playButton = st.button("Click to show")
     if state_playButton:
-        st.text(sdata)
+        # st.text(sdata)
+        st.text('Hello!')
     
     
     
