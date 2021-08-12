@@ -78,7 +78,7 @@ def main():
     
     st.header("# Classificaion for lung condition demo.")
     "### Recording"
-    # sdata = app_sendonly_audio()
+    sdata = app_sendonly_audio()
     
     state_playButton = st.button("Click to show")
     if state_playButton:
