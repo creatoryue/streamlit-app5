@@ -66,12 +66,12 @@ def app_sendonly_audio():
                 sound_window_buffer += sound_chunk
                 if len(sound_window_buffer) > sound_window_len:
                     sound_window_buffer = sound_window_buffer[-sound_window_len:]
-
+'''
             if sound_window_buffer:
                 sound_window_buffer = sound_window_buffer.set_channels(1)
                 sample = np.array(sound_window_buffer.get_array_of_samples())
                 return sample
-    
+    '''
     
 
 def main():
