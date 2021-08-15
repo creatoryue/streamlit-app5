@@ -9,14 +9,7 @@ WEBRTC_CLIENT_SETTINGS = ClientSettings(
         "audio": True,
     },
 )
-WEBRTC_CLIENT_SETTINGS.update(
-    {
-        "media_stream_constraints": {
-            "video": media_file_info["type"] == "video",
-            "audio": media_file_info["type"] == "audio",
-        }
-    }
-)
+
 
 def main():
     webrtc_ctx = webrtc_streamer(
