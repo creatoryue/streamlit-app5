@@ -2,6 +2,7 @@ from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
 from aiortc.contrib.media import MediaRecorder
 import streamlit as st
 import matplotlib.pyplot as plt
+import logger
 
 
 WEBRTC_CLIENT_SETTINGS = ClientSettings(
