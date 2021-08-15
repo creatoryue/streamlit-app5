@@ -2,6 +2,22 @@ from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
 from aiortc.contrib.media import MediaRecorder
 
 
+WEBRTC_CLIENT_SETTINGS = ClientSettings(
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    media_stream_constraints={
+        "video": True,
+        "audio": True,
+    },
+)
+WEBRTC_CLIENT_SETTINGS.update(
+    {
+        "media_stream_constraints": {
+            "video": media_file_info["type"] == "video",
+            "audio": media_file_info["type"] == "audio",
+        }
+    }
+)
+
 def main():
     webrtc_ctx = webrtc_streamer(
     key="sendonly-audio",
