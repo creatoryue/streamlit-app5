@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from aiortc.contrib.media import MediaRecorder
 
 from streamlit_webrtc import (
-    # AudioProcessorBase,
+    AudioProcessorBase,
     ClientSettings,
-    # VideoProcessorBase,
+    VideoProcessorBase,
     WebRtcMode,
     webrtc_streamer,
 )
@@ -28,34 +28,19 @@ def main():
     
     st.header("# Classificaion for lung condition demo.")
     "### Recording"
-    # 0815 https://githubmemory.com/repo/whitphx/streamlit-webrtc/issues/357
-    webrtc_ctx = webrtc_streamer(
-        key="sendonly-audio",
-        mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=256,
-        client_settings=WEBRTC_CLIENT_SETTINGS,
-    )
-
-    sound_window_len = 1  # 1ms
-
-    audio_buffer = pydub.AudioSegment.silent(
-        duration=sound_window_len
-    )
-    status_indicator = st.empty()
-
+    
+    sound_window_len = 5000  # 5s
+    sound_window_buffer = None
     while True:
         if webrtc_ctx.audio_receiver:
             try:
                 audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
             except queue.Empty:
-                status_indicator.write("No frame arrived.")
-                continue
-
-            status_indicator.write("Running. Say something!")
+                logger.warning("Queue is empty. Abort.")
+                break
 
             sound_chunk = pydub.AudioSegment.empty()
             for audio_frame in audio_frames:
-                st.info('get audio frame')
                 sound = pydub.AudioSegment(
                     data=audio_frame.to_ndarray().tobytes(),
                     sample_width=audio_frame.format.bytes,
@@ -65,13 +50,20 @@ def main():
                 sound_chunk += sound
 
             if len(sound_chunk) > 0:
-                audio_buffer += sound_chunk
-        else:
-            status_indicator.write("AudioReciver is not set. Abort.")
-            break
+                if sound_window_buffer is None:
+                    sound_window_buffer = pydub.AudioSegment.silent(
+                        duration=sound_window_len
+                    )
 
+                sound_window_buffer += sound_chunk
+                if len(sound_window_buffer) > sound_window_len:
+                    sound_window_buffer = sound_window_buffer[-sound_window_len:]
+        else:
+            logger.warning("AudioReciver is not set. Abort.")
+            break
+            
     st.info("Writing wav to disk")
-    audio_buffer.export('temp.wav', format='wav')
+    sound_window_buffer.export('temp.wav', format='wav')
     
     
     # sdata = app_sendonly_audio()
