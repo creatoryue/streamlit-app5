@@ -102,8 +102,8 @@ def main():
             logger.warning("AudioReciver is not set. Abort.")
             break
 
-    st.info("Writing wav to disk")
-    sound_window_buffer.export('temp.wav', format='wav')
+    #st.info("Writing wav to disk")
+    #sound_window_buffer.export('temp.wav', format='wav')
     
     
     # sdata = app_sendonly_audio()
