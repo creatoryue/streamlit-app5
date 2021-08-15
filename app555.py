@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import logging
 import pydub
 import numpy as np
+import queue
 
 logger = logging.getLogger(__name__)
 
