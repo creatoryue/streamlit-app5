@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 WEBRTC_CLIENT_SETTINGS = ClientSettings(
     rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
     media_stream_constraints={
-        "video": True,
+        "video": False,
         "audio": True,
     },
 )
