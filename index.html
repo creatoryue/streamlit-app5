@@ -1,0 +1,133 @@
+<!-- 網頁的基本架構 -->
+
+<!DOCTYPE html> <!-- 告訴瀏覽器檔案的類型是html -->
+<html> <!-- 標籤:html 是建構html的架構 網站的最外層-->
+    <head> <!-- head包含網站的資訊 viewport視口 --> 
+        <meta charset="UTF-8"><meta> <!-- 用UTF-8編碼網頁 讓網頁瀏覽器看得懂中文 -->
+        <meta name="description" content="這是岳來悅蝦的網站，裡面有很多美美的照片和教學影片。"/>
+        <meta name="author" content="岳哥"/>
+        <meta name="keywords" content="岳來悅蝦, 養蝦, 水族箱, 水草" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Yue的網頁</title> <!-- title是網頁的標題 -->
+    </head>
+    <body> <!-- Body包含網站的真正看到的實際內容 -->
+
+        <!-- 基本標籤 -->
+        <h1>岳來悅蝦</h1>
+        <hr/> <!-- 中間沒有包內容 就可以直接打 關閉標籤 多個斜線 -->
+        <h2>第一篇文章</h2> <!-- h1~6文字標題 1最大 6最小 -->
+        <p>今天天氣很好XD</p> <!-- p 一般文字 -->
+        <br/> <!-- br換行 -->
+        <h2>第二篇文章</h2> 
+        <p>今天天氣很<i><b>不好</b></i> QQ</p> <!-- b 粗體字 i斜體字 -->
+        
+        <!-- 連結&圖片 -->
+        <h2>連結&圖片</h3>
+        <a href="https://www.youtube.com/channel/UCvxbeD-nEatpTEoNTvNG3ZA"> 岳來悅蝦YT </a> <!-- a標籤需要網址的屬性href 連結要顯示的文字寫在a標籤之間 -->
+        <br/>
+        <a href="page2.html">Page2</a>
+        <a href="dir/page3.html">Page3</a>
+        <a href="images/yue_aquarium_poster.png">poster</a>
+        <br/>
+        <img src="https://i.ytimg.com/vi/3XFO-1Q04cc/hqdefault.jpg?sqp=-oaymwEjCPYBEIoBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDoxUq5eXOW4AvF1PbXZBJPQdO-NA" height="100"/>
+        <a href="https://www.youtube.com/channel/UCvxbeD-nEatpTEoNTvNG3ZA"><img src="images/yue_aquarium_poster.png" height="100"/></a>
+
+        <!-- 嵌入影片&YT影片 -->
+        <h2>嵌入影片&YT影片</h2>
+        <video src="videos/20210422_003136.mp4" controls height="315">無法載入影片</video>
+        <br/>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/iEu6nix322Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+        <!-- 列表ul ol li &表格 -->
+        <ol type="a">
+            <li>Youtube</li>
+            <li>Facebook</li>
+            <li>Instagram</li>
+        </ul>
+
+        <table width="400">
+            <tr>
+                <td>影片</td>
+                <td>觀看次數</td>
+                <td>按讚數</td>
+
+            </tr>
+            <tr>
+                <td>孔雀魚</td>
+                <td>21,039次</td>
+                <td>134</td>
+            </tr>
+            <tr>
+                <td>新手養蝦</td>
+                <td>8,774次</td>
+                <td>75</td>
+            </tr>
+        </table>
+
+        <!-- Html容器 div & span -->
+        <div style="color: red;">
+            <ol type="a">
+                <li>Youtube</li>
+                <li>Facebook</li>
+                <li>Instagram</li>
+            </ul>
+    
+            <table width="400">
+                <tr>
+                    <td>影片</td>
+                    <td>觀看次數</td>
+                    <td>按讚數</td>
+    
+                </tr>
+                <tr>
+                    <td>孔雀魚</td>
+                    <td>21,039次</td>
+                    <td>134</td>
+                </tr>
+                <tr>
+                    <td>新手養蝦</td>
+                    <td>8,774次</td>
+                    <td>75</td>
+                </tr>
+            </table>
+        </div>
+
+        <a href="#">link1</a>
+        <a href="#">link2</a>
+        <hr/>
+        <p>Hello</p>
+        <p>Hello2</p>
+        <br/>
+
+        <div>div1</div>
+        <div>div2</div>
+        <hr/>
+        <span>span1</span>
+        <span>span2</span>
+        <br/>
+        <br/><br/><br/>
+        <!-- input -->
+        <input type="button" title="Click">
+        <br/>
+        <br/>
+        <input type="checkbox">
+        <br/>
+        <br/>
+        <input type="text" placeholder="帳號">
+        <br/>
+        <br/>
+        <input type="text" placeholder="密碼">
+        <br/>
+        <br/>
+        <input type="date">
+        <br/>
+        <br/>
+        <input type="file">
+        <br/>
+        <br/>
+        <input type="range">
+        <br/>
+        <br/>
+        <audio src="audio/Gymnopedie No 3 - Kevin MacLeod.mp3" controls></audio>
+    </body>
+</html>
