@@ -9,9 +9,9 @@ st.header("test html import")
 
 # https://discuss.streamlit.io/t/change-the-display-position-of-an-html-file-on-a-webpage-in-streamlit/7779
 
-#HtmlFile = open("index.html", 'r', encoding='utf-8')
-#source_code = HtmlFile.read() 
-#print(source_code)
+HtmlFile = open("index.html", 'r', encoding='utf-8')
+source_code = HtmlFile.read() 
+print(source_code)
 #components.html(source_code, height= 1600, width=1600)
 
 ###--------------------------2-------------------------###
@@ -20,14 +20,14 @@ st.header("test html import")
 # https://hackmd.io/@shaoeChen/HJkOuSagf?type=view
 # https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
 
-from flask import Flask
-from flask import render_template
+#from flask import Flask
+#from flask import render_template
 
-app = Flask(__name__)
+#app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+#@app.route('/')
+#def index():
+#    return render_template('index.html')
 
-if __name__ == '__main__':
-  app.run(debug=True)
+#if __name__ == '__main__':
+#  app.run(debug=True)
