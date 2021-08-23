@@ -1,98 +1,291 @@
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
-from aiortc.contrib.media import MediaRecorder
-import streamlit as st
-import matplotlib.pyplot as plt
-import logging
-import pydub
-import numpy as np
-import queue
+const RecorderWorker = (() => {
+    function RecorderWorker() {
 
-logger = logging.getLogger(__name__)
+    }
 
-WEBRTC_CLIENT_SETTINGS = ClientSettings(
-    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-    media_stream_constraints={
-        "video": False,
-        "audio": True,
-    },
-)
+    const findFirstFrame = (stream, mp3Info) => {
 
+        for (let i = 0; i < stream.byteLength; i++) {
+            const frame = mp3Parser.readFrame(stream, i, true);
 
-def main():
-    webrtc_ctx = webrtc_streamer(
-    key="sendonly-audio",
-    mode=WebRtcMode.SENDONLY,
-    audio_receiver_size=256,
-    client_settings=WEBRTC_CLIENT_SETTINGS,
-    )
+            if (frame) {
+                mp3Info.sampleLength = frame._section.sampleLength;
+                mp3Info.samplingRate = frame.header.samplingRate;
+                mp3Info.bitrate = frame.header.bitrate;
+                mp3Info.numChannels = frame.header.channelModeBits == "11" ? 1 : 2;
+                mp3Info.isProtected = !frame.header.isProtected;
+                mp3Info.frames.push(frame._section.offset);
 
-    fig_place = st.empty()
+                return frame._section.nextFrameIndex - 1;
+            }
 
-    fig, [ax_time, ax_freq] = plt.subplots(
-        2, 1, gridspec_kw={"top": 1.5, "bottom": 0.2}
-    )
+        }
+    }
 
-    sound_window_len = 5000  # 5s
-    sound_window_buffer = None
-    while True:
-        if webrtc_ctx.audio_receiver:
-            try:
-                audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
-            except queue.Empty:
-                logger.warning("Queue is empty. Abort.")
-                break
+    const parseStream = (_stream, mp3Info) => {
+        mp3Info.frames = [];
+        const stream = new DataView(_stream);
 
-            sound_chunk = pydub.AudioSegment.empty()
-            for audio_frame in audio_frames:
-                sound = pydub.AudioSegment(
-                    data=audio_frame.to_ndarray().tobytes(),
-                    sample_width=audio_frame.format.bytes,
-                    frame_rate=audio_frame.sample_rate,
-                    channels=len(audio_frame.layout.channels),
-                )
-                sound_chunk += sound
+        const offset = findFirstFrame(stream, mp3Info);
 
-            if len(sound_chunk) > 0:
-                if sound_window_buffer is None:
-                    sound_window_buffer = pydub.AudioSegment.silent(
-                        duration=sound_window_len
-                    )
+        try {
+            for (let i = offset; i <= stream.byteLength; i++) {
 
-                sound_window_buffer += sound_chunk
-                if len(sound_window_buffer) > sound_window_len:
-                    sound_window_buffer = sound_window_buffer[-sound_window_len:]
+                const frame = mp3Parser.readFrame(stream, i, true);
 
-            if sound_window_buffer:
-                # Ref: https://own-search-and-study.xyz/2017/10/27/python%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E9%9F%B3%E5%A3%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%81%8B%E3%82%89%E3%82%B9%E3%83%9A%E3%82%AF%E3%83%88%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92%E4%BD%9C/  # noqa
-                sound_window_buffer = sound_window_buffer.set_channels(
-                    1
-                )  # Stereo to mono
-                sample = np.array(sound_window_buffer.get_array_of_samples())
+                if (frame) {
+                    mp3Info.frames.push(frame._section.offset);
 
-                ax_time.cla()
-                times = (np.arange(-len(sample), 0)) / sound_window_buffer.frame_rate
-                ax_time.plot(times, sample)
-                ax_time.set_xlabel("Time")
-                ax_time.set_ylabel("Magnitude")
+                    i = frame._section.nextFrameIndex - 1;
+                }
+            }
+        } catch (err) {
 
-                spec = np.fft.fft(sample)
-                freq = np.fft.fftfreq(sample.shape[0], 1.0 / sound_chunk.frame_rate)
-                freq = freq[: int(freq.shape[0] / 2)]
-                spec = spec[: int(spec.shape[0] / 2)]
-                spec[0] = spec[0] / 2
+        }
 
-                ax_freq.cla()
-                ax_freq.plot(freq, np.abs(spec))
-                ax_freq.set_xlabel("Frequency")
-                ax_freq.set_yscale("log")
-                ax_freq.set_ylabel("Magnitude")
+        if (!mp3Info.frames.length) {
+            throw new Error("not mp3");
+        }
 
-                fig_place.pyplot(fig)
-        else:
-            logger.warning("AudioReciver is not set. Abort.")
-            break
+        mp3Info.samplesRatio = mp3Info.frames.length * mp3Info.sampleLength;
+
+        mp3Info.duration = mp3Info.frames.length * mp3Info.sampleLength / mp3Info.samplingRate;
+
+        mp3Info.audioData = stream.buffer;
+    }
+
+    const processStream = (streamData, mp3Info) => {
+        return new Promise((resolve, reject) => {
+            try {
+                parseStream(streamData, mp3Info);
+            } catch (err) {
+                return reject({id: 406, error: "not mp3", type: "error"});
+            }
 
 
+            resolve(new Uint8Array(streamData));
 
-if __name__ == "__main__":
-    main()
+        });
+    }
+
+    const floatTo16BitPCM = (input) => {
+        const output = new Int16Array(input.length);
+
+        for (let i = 0; i < input.length; i++) {
+            let s = Math.max(-1, Math.min(1, input[i]));
+            output[i] = (s < 0 ? s * 0x8000 : s * 0x7FFF);
+        }
+
+        return output;
+    };
+
+    const encode = function (arrayBuffer) {
+        var remaining = arrayBuffer.length;
+
+        for (var i = 0; remaining >= 0; i += self.maxSamples) {
+            var left = arrayBuffer.subarray(i, i + self.maxSamples);
+            const buffer = self.encoder.encodeBuffer(left);
+            self.recordBuffer.push(new Uint8Array(buffer));
+            remaining -= self.maxSamples;
+        }
+    };
+
+    const updateParserLib = () => {
+        mp3ParserLib.bitrateMap["00"] = {
+            "01": {
+                "0000": "free",
+                "0001": 8,
+                "0010": 16,
+                "0011": 24,
+                "0100": 32,
+                "0101": 40,
+                "0110": 48,
+                "0111": 56,
+                "1000": 64,
+                "1001": 80,
+                "1010": 96,
+                "1011": 112,
+                "1100": 128,
+                "1101": 144,
+                "1110": 160,
+                "1111": "bad"
+            },
+            "10": {
+                "0000": "free",
+                "0001": 8,
+                "0010": 16,
+                "0011": 24,
+                "0100": 32,
+                "0101": 40,
+                "0110": 48,
+                "0111": 56,
+                "1000": 64,
+                "1001": 80,
+                "1010": 96,
+                "1011": 112,
+                "1100": 128,
+                "1101": 144,
+                "1110": 160,
+                "1111": "bad"
+            },
+            "11": {
+                "0000": "free",
+                "0001": 32,
+                "0010": 48,
+                "0011": 56,
+                "0100": 64,
+                "0101": 80,
+                "0110": 96,
+                "0111": 112,
+                "1000": 128,
+                "1001": 144,
+                "1010": 160,
+                "1011": 176,
+                "1100": 192,
+                "1101": 224,
+                "1110": 256,
+                "1111": "bad"
+            },
+
+        };
+        mp3ParserLib.sampleLengthMap["00"] = {"01": 576, "10": 1152, "11": 384};
+    }
+
+    const onMessage = function (event) {
+        switch (event.data.type) {
+
+            case 'appendData':
+
+                if (self.record) {
+                    self.encode(self.floatTo16BitPCM(event.data.data));
+                }
+
+                break;
+            case 'init':
+                self.updateParserLib();
+
+                self.sampleRate = event.data.sampleRate || 44100;
+                self.bufferSize = event.data.bufferSize || 2048;
+                self.minAndMaxSamples = [];
+                self.recordBuffer = [];
+                self.maxSamples = 2304;
+                self.encoder = new lamejs.Mp3Encoder(1, self.sampleRate, 256);
+                self.record = false;
+
+                self.postMessage({
+                    type: 'init'
+                });
+
+                break;
+
+            case 'startRecord':
+                self.record = !self.record;
+
+                self.postMessage({
+                    handlerId: event.data.handlerId,
+                    type: 'startRecord',
+                    record: self.record
+                });
+
+                break;
+
+            case 'stopRecord':
+                self.record = !self.record;
+
+                self.recordBuffer.push(self.encoder.flush());
+
+                self.duration = self.recordBuffer.length * self.bufferSize / self.sampleRate;
+
+                self.numFramesInSecond = self.recordBuffer.length / self.duration;
+
+                const encodedBlob = {blob: new Blob(self.recordBuffer, {type: 'audio/mp3'})};
+
+                self.recordBuffer.length = 0;
+
+                const fileReader = new FileReader();
+
+                fileReader.onload = (evt) => {
+                    const mp3Info = {};
+
+                    delete encodedBlob.blob;
+
+                    self.processStream(evt.target.result, mp3Info).then((result) => {
+                        const audioData = new Uint8Array(mp3Info.audioData);
+
+                        const _mp3Info = Object.assign({}, {
+                            samplesRatio: mp3Info.samplesRatio,
+                            duration: mp3Info.duration,
+                            numChannels: mp3Info.numChannels,
+                            samplingRate: mp3Info.samplingRate,
+                            frames: new Int32Array(mp3Info.frames)
+                        });
+
+                        for (const key of Object.keys(mp3Info)) {
+                            delete mp3Info[key];
+                        }
+
+                        self.postMessage({
+                            handlerId: event.data.handlerId,
+                            type: 'stopRecord',
+                            mp3Info: _mp3Info,
+                            audioData: audioData
+                        }, [audioData.buffer, _mp3Info.frames.buffer]);
+
+                    }).catch((error) => {
+                        self.postMessage({
+                            handlerId: event.data.handlerId,
+                            type: 'processError',
+                            error: error
+                        });
+
+                        self.postMessage({
+                            handlerId: event.data.handlerId,
+                            type: 'processComplete',
+                            mp3Info: {}
+                        });
+                    });
+                }
+
+                fileReader.onerror = (evt) => {
+                    self.postMessage({
+                        type: 'fileOpenError',
+                        result: {
+                            handlerId: event.data.handlerId,
+                            error: evt.target.error
+                        }
+                    });
+                }
+
+                fileReader.readAsArrayBuffer(encodedBlob.blob);
+
+
+                break;
+
+            case 'reset':
+                self.recordBuffer = [];
+                self.minAndMaxSamples = [];
+                self.record = false;
+                break;
+        }
+    }
+
+    RecorderWorker.prototype.toString = (params = {}) => {
+
+        return `importScripts('${params.origin}/v2/js/lame.min.js','${params.origin}/v2/js/a_worker.lib.js'); 
+                self.onmessage = ${onMessage}; 
+                self.params = ${JSON.stringify(params)}; 
+                self.encode=${encode}; 
+                self.floatTo16BitPCM=${floatTo16BitPCM};
+                self.processStream=${processStream};
+                self.parseStream=${parseStream};
+                self.findFirstFrame=${findFirstFrame};
+                self.updateParserLib=${updateParserLib};
+                `;
+    }
+
+    RecorderWorker.getInstance = (params) => {
+        return new RecorderWorker().toString(params);
+    }
+
+    return RecorderWorker;
+})();
