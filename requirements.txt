@@ -3,8 +3,6 @@ streamlit_webrtc
 pydub
 
 matplotlib
-libportaudio2
 
-sounddevice
 
 
