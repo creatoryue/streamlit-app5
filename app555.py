@@ -4,3 +4,4 @@ import base64
 
 st.header("test html import")
 tmlFile = open("index.html", 'r', encoding='utf-8')
+source_code = HtmlFile.read() 
