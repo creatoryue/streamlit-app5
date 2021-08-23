@@ -5,3 +5,4 @@ pydub
 matplotlib
 
 sounddevice
+PortAudio
