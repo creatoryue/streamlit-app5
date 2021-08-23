@@ -2,8 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import base64
 
-from flask import Flask
-from flask import render_template
 
 st.header("test html import")
 ###--------------------------1-------------------------###
@@ -22,3 +20,14 @@ st.header("test html import")
 # https://hackmd.io/@shaoeChen/HJkOuSagf?type=view
 # https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
 
+from flask import Flask
+from flask import render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('abc.html')
+
+if __name__ == '__main__':
+  app.run(debug=True)
