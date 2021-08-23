@@ -1,4 +1,4 @@
-pip install --upgrade pip
+pip install update pip 
 
 streamlit
 streamlit_webrtc
