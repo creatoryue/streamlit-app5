@@ -22,13 +22,3 @@ st.header("test html import")
 # https://hackmd.io/@shaoeChen/HJkOuSagf?type=view
 # https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
 
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return render_template('templates\\index.html')
-  
-
-
-app.debug = True
-app.run()
