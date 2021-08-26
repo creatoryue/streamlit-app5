@@ -5,7 +5,7 @@ import pydub
 import numpy as np
 import queue
 import matplotlib.pyplot as plt
-
+import librosa
 
 from aiortc.contrib.media import MediaRecorder
 
@@ -29,6 +29,13 @@ WEBRTC_CLIENT_SETTINGS = ClientSettings(
     },
 )
 
+import os
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(ROOT_DIR, 'data')
+def saveWavFile(fn):    
+    WAVE_OUTPUT_FILE = os.path.join(DATA_DIR, "{}.wav".format(fn))
+    return WAVE_OUTPUT_FILE
+
 
 def main():
     
@@ -45,13 +52,8 @@ def main():
     if not webrtc_ctx.audio_receiver:
         st.info('Now condition: Stop recording.')
     
-    global audio_frames, sound_chunk
+    # global audio_frames, sound_chunk
     
-    @st.cache
-    def sayHello():
-        st.text('123')
-        
-
         
     if webrtc_ctx.audio_receiver:
         st.info('Now strat recording.\n Please breathe toward the microphone.')
@@ -71,24 +73,46 @@ def main():
             )
             sound_chunk += sound    
     
-    state_btn_save = st.button('Save')
-    if state_btn_save:
-        try:
-            sound_chunk.export('C:\\D\\NTHU\\ProjactStudy\\Python\\stramlit_WebAppLungClassification\\github\\APP5\\temp.wav', format='wav')
-            st.info("Writing wav to disk")
-        except:
-            st.error('Try do recording first and do saving.')
+        state_btn_save = st.button('Save')
+        if state_btn_save:
+            try:
+                sound_chunk.export(saveWavFile('temp'), format='wav')
+                st.info("Writing wav to disk")
+            except:
+                st.error('Try do recording first and do saving.')
             
-    state_button = st.button('Click to show the data')
-    if state_button:
-        try:
-            # st.text('Click!')
-            sound_chunk = sound_chunk.set_channels(1) # Stereo to mono
-            sample = np.array(sound_chunk.get_array_of_samples())
-            st.text(sample)
-        except:
-            st.error('Try do recording first and do saving.')
+        state_button = st.button('Click to show the data')
+        if state_button:
+            try:
+                # st.text('Click!')
+                sound_chunk = sound_chunk.set_channels(1) # Stereo to mono
+                sample = np.array(sound_chunk.get_array_of_samples())
+                st.text(sample)
+            except:
+                st.error('Try do recording first and do saving.')
+            
+    # file_bytes = st.file_uploader("Upload a file", type=("wav", "mp3", "m4a"))
+    
+    # # Plat the sounds
+    # st.audio(file_bytes, format = 'audio/m4a')
+    
+    # st.text('file_bytes: {}'.format(file_bytes))
+    # st.text('file_bytes.getvalue: {}'.format(file_bytes.getvalue()))
+    # st.text('file_bytes.getbuffer: {}'.format(file_bytes.getbuffer()))
 
+    # librosa.load(file_bytes)
+    
+    # data = np.frombuffer(file_bytes.getvalue(), dtype=np.ubyte)
+    # test = pydub.AudioSegment.from_mono_audiosegments(file_bytes)
+    
+    
+    # fig_place = st.empty()
+    # fig, ax_time = plt.subplots(1,1)
+    # ax_time.plot(data)
+    # plt.ylim([-500,500])
+    
+    # fig_place.pyplot(fig)
+    
     # fig_place = st.empty()
 
     # fig, [ax_time, ax_freq] = plt.subplots(
