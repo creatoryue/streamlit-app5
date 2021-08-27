@@ -4,5 +4,8 @@ pydub
 
 matplotlib
 librosa
-
+tensorflow==2.3.0
+tensorboard==2.4.0
+h5py==2.10.0
+Keras==2.4.3
 
