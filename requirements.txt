@@ -1,9 +1,9 @@
 streamlit
 streamlit_webrtc
-/home/appuser/venv/bin/python -m pip install --upgrade pip
+
 pydub
 matplotlib
-librosa
+
 Keras
 h5py
 pandas
