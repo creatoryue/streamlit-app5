@@ -3,17 +3,20 @@ from pathlib import Path
 import streamlit as st
 import pydub
 import numpy as np
-import queue
+# import queue
 import matplotlib.pyplot as plt
 import librosa
 import librosa.display
 
-from aiortc.contrib.media import MediaRecorder
+from src import loadModel
+import time
+
+# from aiortc.contrib.media import MediaRecorder
 
 from streamlit_webrtc import (
-    AudioProcessorBase,
+    # AudioProcessorBase,
     ClientSettings,
-    VideoProcessorBase,
+    # VideoProcessorBase,
     WebRtcMode,
     webrtc_streamer,
 )
@@ -33,9 +36,15 @@ WEBRTC_CLIENT_SETTINGS = ClientSettings(
 import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
-def saveWavFile(fn):    
-    WAVE_OUTPUT_FILE = os.path.join(DATA_DIR, "{}.wav".format(fn))
-    return WAVE_OUTPUT_FILE
+
+# def saveWavFile(fn):    
+#     WAVE_OUTPUT_FILE = os.path.join(DATA_DIR, "{}.wav".format(fn))
+#     return WAVE_OUTPUT_FILE
+
+# Load Model 
+cnn = loadModel.CNN
+cnn.model = cnn.loadTrainingModel(self=cnn)
+classes = ['COPD-Mild', 'COPD-Severe', 'Interstitial Lung Disease', 'Normal']
 
 
 def main():
@@ -46,7 +55,7 @@ def main():
     webrtc_ctx = webrtc_streamer(
         key="sendonly-audio",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=1536, #256 = 5 seconds
+        audio_receiver_size=1792, #256 = 5 seconds
         client_settings=WEBRTC_CLIENT_SETTINGS,
     )
     
@@ -105,7 +114,17 @@ def main():
             ax_mfcc.cla()
             librosa.display.specshow(X, x_axis='time')
             fig_place.pyplot(fig)
-   
+            
+            #Do Prediction
+            data_pred = cnn.samplePred(cnn, sample/1.0)
+            data_pred_class = np.argmax(np.round(data_pred), axis=1)
+    
+            # s2 is the number of the classes
+            s1 = classes[data_pred_class[0]]
+            # s1 is the percentage of the predicted class
+            s2 = np.round(float(data_pred[0,data_pred_class])*100, 4)
+            st.text("Predict class: {} for {}%".format(s1, s2))
+
             # except:
                 # st.error('Try do recording first and do saving.')
             
