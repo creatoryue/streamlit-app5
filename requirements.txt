@@ -1,6 +1,6 @@
 streamlit
 streamlit_webrtc
-pip install -U numpy
+/home/appuser/venv/bin/python -m pip install --upgrade pip
 pydub
 matplotlib
 librosa
