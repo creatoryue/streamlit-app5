@@ -9,8 +9,8 @@ h5py
 pandas
 tensorflow
 tensorboard
-
-numpy==1.12.0
+librosa
+numpy
 
 
 
