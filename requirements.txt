@@ -9,8 +9,7 @@ h5py
 pandas
 tensorflow
 tensorboard
-sounddevice
-pyaudio
+
 
 
 
