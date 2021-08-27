@@ -10,7 +10,7 @@ pandas
 tensorflow
 tensorboard
 
-
+numpy==1.12.0
 
 
 
