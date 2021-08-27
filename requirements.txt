@@ -1,6 +1,6 @@
 streamlit
 streamlit_webrtc
-numpy
+pip install -U numpy
 pydub
 matplotlib
 librosa
