@@ -1,8 +1,6 @@
 streamlit
 streamlit_webrtc
 pydub
-matplotlib
-librosa
 
 
 audioread==2.1.9
@@ -17,8 +15,6 @@ sounddevice
 pyaudio
 
 
-IPython
-ipywebrtc
 
 
 
